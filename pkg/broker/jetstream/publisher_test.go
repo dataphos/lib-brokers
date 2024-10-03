@@ -17,12 +17,12 @@ package jetstream_test
 import (
 	"context"
 	"fmt"
-	"github.com/nats-io/nats.go"
 	"strconv"
 	"sync"
 	"testing"
 	"time"
 
+	"github.com/nats-io/nats.go"
 	"github.com/stretchr/testify/require"
 
 	"github.com/dataphos/lib-brokers/pkg/broker"

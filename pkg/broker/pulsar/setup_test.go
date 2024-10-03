@@ -16,13 +16,13 @@ package pulsar_test
 
 import (
 	"context"
-	"github.com/ory/dockertest/v3"
 	"log"
 	"os"
 	"testing"
 	"time"
 
 	"github.com/apache/pulsar-client-go/pulsar"
+	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
 
 	p "github.com/dataphos/lib-brokers/pkg/broker/pulsar"

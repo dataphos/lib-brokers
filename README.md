@@ -111,34 +111,35 @@ At the core of the first group (the one where messages are individual entities) 
 
 ```go
 type Message struct {
-	// ID identifies the message (unique across the source topic).
-	ID string
-
-	// Key identifies the payload part of the message.
-	// Unlike ID, it doesn't have to be unique across the source topic and is mostly used
-	// for ordering guarantees.
-	Key string
-
-	// Data holds the payload of the message.
-	Data []byte
-
-	// Attributes holds the properties commonly used by brokers to pass metadata.
-	Attributes map[string]interface{}
-
-        // PublishTime the time this message was published.
-        PublishTime time.Time
-
-	// IngestionTime the time this message was received.
-	IngestionTime time.Time
-
-	// AckFunc must be called after successful processing (and not before).
-	// This signals to the broker that this Message is safe to delete.
-	AckFunc func()
-
-	// NackFunc must be called if the processing has failed.
-	// This signals to the broker that this Message is not safe to delete.
-	NackFunc func()
+    // ID identifies the message (unique across the source topic).
+    ID string
+    
+    // Key identifies the payload part of the message.
+    // Unlike ID, it doesn't have to be unique across the source topic and is mostly used
+    // for ordering guarantees.
+    Key string
+    
+    // Data holds the payload of the message.
+    Data []byte
+    
+    // Attributes holds the properties commonly used by brokers to pass metadata.
+    Attributes map[string]interface{}
+    
+    // PublishTime the time this message was published.
+    PublishTime time.Time
+    
+    // IngestionTime the time this message was received.
+    IngestionTime time.Time
+    
+    // AckFunc must be called after successful processing (and not before).
+    // This signals to the broker that this Message is safe to delete.
+    AckFunc func()
+    
+    // NackFunc must be called if the processing has failed.
+    // This signals to the broker that this Message is not safe to delete.
+    NackFunc func()
 }
+
 ```
 
 There are six different consumer interfaces which, in some way, return the `Message` struct.  
@@ -151,13 +152,13 @@ For example, the "main" interface for consuming individual messages is the `Rece
 
 ```go
 type Receiver interface {
-	// Receive runs the pulling process, blocking for the entire duration of the pull.
-	//
-	// Receive executes the provided callback for each pulled Message, meaning it is the responsibility
-	// of the Receiver to provide the callbacks with multithreading.
-	//
-	// Receive blocks until either an error is returned, or when the provided ctx is canceled, in which case, nil is returned.
-	Receive(context.Context, func(context.Context, Message)) error
+    // Receive runs the pulling process, blocking for the entire duration of the pull.
+    //
+    // Receive executes the provided callback for each pulled Message, meaning it is the responsibility
+    // of the Receiver to provide the callbacks with multithreading.
+    //
+    // Receive blocks until either an error is returned, or when the provided ctx is canceled, in which case, nil is returned.
+    Receive(context.Context, func(context.Context, Message)) error
 }
 ```
 
@@ -168,10 +169,10 @@ object, and then pass it on to the appropriate `brokerutil` adapter, like so:
 
 ```go
 iterator, err := servicebus.NewBatchIteratorFromEnv()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer iterator.Close()
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer iterator.Close()
 
 receiver := brokerutil.BatchedMessageIteratorIntoReceiver(
         iterator,
@@ -195,43 +196,42 @@ At the core of the Kafka-like group are the `Record` and `Batch` message types:
 
 ```go
 type Record struct {
-	// Offset is the index of the record stored in a specific Partition.
-	Offset int64
+  // Offset is the index of the record stored in a specific Partition.
+  Offset int64
 
-	// Partition is the index of the partition this record belongs to.
-	// Partitions are a common way brokers store topics.
-	Partition int64
+  // Partition is the index of the partition this record belongs to.
+  // Partitions are a common way brokers store topics.
+  Partition int64
 
-	// Key identifies the payload part of the record (and not the record itself).
-	// It doesn't have to be unique across the source topic and is mostly used
-	// for ordering guarantees.
-	Key string
+  // Key identifies the payload part of the record (and not the record itself).
+  // It doesn't have to be unique across the source topic and is mostly used
+  // for ordering guarantees.
+  Key string
 
-	// Value holds the payload of the record.
-	Value []byte
+  // Value holds the payload of the record.
+  Value []byte
 
-	// Attributes holds the properties commonly used by brokers to pass metadata.
-	Attributes map[string]interface{}
+  // Attributes holds the properties commonly used by brokers to pass metadata.
+  Attributes map[string]interface{}
 
-	// PublishTime the time this message was published.
-	PublishTime time.Time
+  // PublishTime the time this message was published.
+  PublishTime time.Time
 
-	// IngestionTime the time this record was received.
-	IngestionTime time.Time
+  // IngestionTime the time this record was received.
+  IngestionTime time.Time
 
-	// CommitFunc must be called after successful processing (and not before).
-	// This signals to the broker that this Record is safe to delete.
-	CommitFunc func()
+  // CommitFunc must be called after successful processing (and not before).
+  // This signals to the broker that this Record is safe to delete.
+  CommitFunc func()
 }
 
 type Batch struct {
-        // Records the records of the Batch. BatchRecord is identical to Record, but without the ability
-	    // to commit itself (without CommitFunc).
+	// Records the records of the Batch. BatchRecord is identical to Record, but without the ability 
+	// to commit itself (without CommitFunc).
         Records []BatchRecord
-        
-        // CommitFunc must be called after successful processing of the entire Batch, signaling to the
-        // broker that this batch is safe to delete.
-        CommitFunc func()
+		//CommitFunc must be called after successful processing of the entire Batch, signaling to the 
+		//broker that this batch is safe to delete. 
+		CommitFunc func()
 }
 ```
 

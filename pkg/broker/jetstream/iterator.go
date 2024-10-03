@@ -16,10 +16,10 @@ package jetstream
 
 import (
 	"context"
-	"github.com/nats-io/nats.go"
 	"strconv"
 	"time"
 
+	"github.com/nats-io/nats.go"
 	"github.com/pkg/errors"
 
 	"github.com/dataphos/lib-brokers/pkg/broker"

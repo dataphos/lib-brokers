@@ -19,13 +19,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/ory/dockertest/v3"
 	"log"
 	"os"
 	"testing"
 	"time"
 
 	"github.com/go-zookeeper/zk"
+	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
 	"github.com/twmb/franz-go/pkg/kgo"
 

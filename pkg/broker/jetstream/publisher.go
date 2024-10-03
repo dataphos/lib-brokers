@@ -17,8 +17,8 @@ package jetstream
 import (
 	"context"
 	"fmt"
-	"github.com/nats-io/nats.go"
 
+	"github.com/nats-io/nats.go"
 	"golang.org/x/sync/errgroup"
 
 	"github.com/dataphos/lib-brokers/pkg/broker"
