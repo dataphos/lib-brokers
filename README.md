@@ -226,12 +226,12 @@ type Record struct {
 }
 
 type Batch struct {
-	// Records the records of the Batch. BatchRecord is identical to Record, but without the ability 
-	// to commit itself (without CommitFunc).
+  // Records the records of the Batch. BatchRecord is identical to Record, but without the ability 
+  // to commit itself (without CommitFunc).
         Records []BatchRecord
-		//CommitFunc must be called after successful processing of the entire Batch, signaling to the 
-		//broker that this batch is safe to delete. 
-		CommitFunc func()
+    //CommitFunc must be called after successful processing of the entire Batch, signaling to the 
+    //broker that this batch is safe to delete. 
+    CommitFunc func()
 }
 ```
 
