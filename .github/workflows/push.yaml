@@ -48,7 +48,7 @@ jobs:
         run: go install github.com/B1NARY-GR0UP/nwa@latest
 
       - name: Add missing license headers
-        run: nwa add -c "SYNTIO Ltd." # WRITE FOLDER PATHS FOR ALL FOLDERS THAT CONTAIN FILES THAT REQUIRE HEADERS eg. ./persistor
+        run: nwa add -c "Syntio Ltd."  ./internal ./pkg ./examples
 
       - name: Check and Commit changes
         id: check_commit
@@ -76,64 +76,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr create --base ${{ github.ref_name }} --head "add-license-headers-${{ github.run_id }}" --title "style: add license headers" --body "This PR adds license headers to the affected files. Recommendation: Merge this PR using the rebase-merge method"
-
-  Upload_docker:
-    name: Build, Push and Sign Docker Images
-    if: github.ref_name == 'main'
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write # required to generate JWT token
-
-    strategy:
-      matrix:
-        component:
-          - dockerfile-path: # Add dockerfile path eg. './persistor/docker/persistor/Dockerfile'
-            image-name: # Add image name eg. 'persistor-core'
-
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
-      - name: Set Tag
-        run: |
-          TAG=$(cat version.txt)
-          echo "TAG=$TAG" >> $GITHUB_ENV
-
-      - name: Docker Hub Login
-        run: |
-          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login --username "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ matrix.component.image-name }}:${{ env.TAG }} -f ${{ matrix.component.dockerfile-path }} .
-
-      - name: Check if Docker image tag exists
-        run: |
-          if docker manifest inspect syntioinc/dataphos-${{ matrix.component.image-name }}:${{ env.TAG }} > /dev/null 2>&1; then
-            echo "TAG_EXISTS=true" >> $GITHUB_ENV
-          else
-            echo "TAG_EXISTS=false" >> $GITHUB_ENV
-          fi
-
-      - name: Tag and Push Docker image
-        if: ${{ env.TAG_EXISTS }} == 'false'
-        run: |
-          docker tag ${{ matrix.component.image-name }}:${{ env.TAG }} syntioinc/dataphos-${{ matrix.component.image-name }}:${{ env.TAG }}
-          docker push syntioinc/dataphos-${{ matrix.component.image-name }}:${{ env.TAG }}
-
-      - name: Install cosign
-        if: ${{ env.TAG_EXISTS }} == 'false'
-        uses: sigstore/cosign-installer@v3.6.0
-
-      - name: Sign the Docker image
-        if: ${{ env.TAG_EXISTS }} == 'false'
-        run: |
-          digest=$(docker inspect --format='{{index .RepoDigests 0}}' syntioinc/dataphos-${{ matrix.component.image-name }}:${{ env.TAG }})
-          cosign sign --yes "$digest"
-
-      - name: Image already exists
-        if: ${{ env.TAG_EXISTS }} == 'true'
-        run: echo "Docker image syntioinc/dataphos-${{ matrix.component.image-name }}:${{ env.TAG }} already exists. Skipping push."
 
   release-please:
     if: github.ref_name == 'main'
