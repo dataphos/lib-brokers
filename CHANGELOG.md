@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/dataphos/lib-brokers/compare/v1.0.0...v1.1.0) (2024-10-22)
+
+
+### Features
+
+* ping kafka with kerberos during iterator init ([#5](https://github.com/dataphos/lib-brokers/issues/5)) ([33bfc7d](https://github.com/dataphos/lib-brokers/commit/33bfc7dc8e1043a1c269fb3557062f43cf948560))
+
 ## 1.0.0 (2024-10-03)
 **Contributors:** [@andrijadukic-syntio](https://github.com/andrijadukic-syntio), [@vedrankolka](https://github.com/vedrankolka)
 ,[@AndrijaRaguz](https://github.com/AndrijaRaguz), [@EmilHuzjakSynth](https://github.com/EmilHuzjakSynth), [@Simun17](https://github.com/Simun17)
