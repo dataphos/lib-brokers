@@ -16,7 +16,7 @@ package kafka
 
 // PlainSASLConfig defines the configuration properties needed for using SASL/PLAIN authentication.
 //
-// User and Pass fields need to be set in order to successfully initialize the Kerberos authentication.
+// User and Pass fields need to be set in order to successfully initialize the SASL/PLAIN authentication.
 type PlainSASLConfig struct {
 	// Zid is an optional authorization ID to use in authenticating.
 	Zid string
