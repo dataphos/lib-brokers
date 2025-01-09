@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/dataphos/lib-brokers/compare/v1.1.0...v1.2.0) (2024-12-20)
+
+
+### Features
+
+* add ssl/scram-sha-512 auth option to kafka ([#9](https://github.com/dataphos/lib-brokers/issues/9)) ([5ab30bd](https://github.com/dataphos/lib-brokers/commit/5ab30bdec1896168b7a38bb53d772d35e0ae8ff3))
+
 ## [1.1.0](https://github.com/dataphos/lib-brokers/compare/v1.0.0...v1.1.0) (2024-10-22)
 
 
