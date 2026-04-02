@@ -198,6 +198,3 @@ jobs:
 #
 #      - name: Go Test
 #        run: go test ${{ env.TEST_ARGS }} ${{ env.TEST_PATH }}
-
-      - name: Go Test
-        run: go test ${{ env.TEST_ARGS }} ${{ env.TEST_PATH }}
