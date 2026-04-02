@@ -230,8 +230,8 @@ func configureIteratorClient(ctx context.Context, config ConsumerConfig, setting
 		return nil, err
 	}
 	// Since client.Ping(ctx) currently (kgo v1.10) doesn't use security authorization it times out
-	// when a security protocol (SASL/Plain) is used and that's why we added a check condition.
-	if config.PlainSASL == nil {
+	// when a security protocol (SASL/Plain or Kerberos) is used and that's why we added a check condition.
+	if config.Kerberos == nil && config.PlainSASL == nil {
 		if err = client.Ping(ctx); err != nil {
 			return nil, err
 		}
