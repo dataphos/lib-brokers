@@ -28,7 +28,6 @@ import (
 
 func TestNewPublisher(t *testing.T) {
 	t.Parallel()
-	
 	server, client := setupFakeServer(t, "test-bucket","test-bucket-2")
 	defer server.Stop()
 	t.Log(listBuckets(t,client,"new-client-test1"))

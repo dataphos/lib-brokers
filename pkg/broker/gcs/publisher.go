@@ -174,7 +174,6 @@ func (t *Topic) BatchPublish(ctx context.Context, messages ...broker.OutboundMes
 }
 
 func (t *Topic) objectName(message broker.OutboundMessage) string {
-	
 	suffix := randomHex(8)
 	ts := time.Now().UTC().Format("2006/01/02/15")
 
@@ -201,6 +200,5 @@ func doBucketHealthCheck(ctx context.Context, bucket *storage.BucketHandle) erro
 	if err != nil {
 		return errors.Wrap(err, "bucket is not accessible")
 	}
-	
 	return testPermissions(ctx, bucket.IAM(), []string{"storage.objects.create"})
 }
