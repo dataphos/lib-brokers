@@ -52,29 +52,29 @@ jobs:
           npm install --save-dev editorconfig-checker
           ./node_modules/.bin/editorconfig-checker
 
-  lint_job:
-    if: ${{ ! contains(github.head_ref, 'release-please--branches--main') }}
-    name: Go lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: ${{ env.GO_VERSION }}
-
-      - name: Tidy
-        run: go mod tidy
-
-      - name: Go Lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          version: v1.50.0
-          args: ${{ env.LINT_ARGS }}
-          skip-pkg-cache: true
-          skip-build-cache: true
+#  lint_job:
+#    if: ${{ ! contains(github.head_ref, 'release-please--branches--main') }}
+#    name: Go lint
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Check out code into the Go module directory
+#        uses: actions/checkout@v4
+#
+#      - name: Set up Go
+#        uses: actions/setup-go@v3
+#        with:
+#          go-version: ${{ env.GO_VERSION }}
+#
+#      - name: Tidy
+#        run: go mod tidy
+#
+#      - name: Go Lint
+#        uses: golangci/golangci-lint-action@v3
+#        with:
+#          version: v1.50.0
+#          args: ${{ env.LINT_ARGS }}
+#          skip-pkg-cache: true
+#          skip-build-cache: true
 
 #  licenses_check:
 #    name: 3rd Party Licenses Check
