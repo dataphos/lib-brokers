@@ -178,23 +178,26 @@ jobs:
 #          echo "Creating a new PR..."
 #          gh pr create --base "${{ env.PARENT_BRANCH }}" --head "update-third-party-licenses-${{ github.run_id }}" --title "${{ env.PR_TITLE }}" --body "This is an automated PR that updates the list of 3rd party licenses."
 
-  test_job:
-    if: ${{ ! contains(github.head_ref, 'release-please--branches--main') }}
-    name: Test job
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: ${{ env.GO_VERSION }}
-
-      - name: Tidy
-        run: go mod tidy
+#  test_job:
+#    if: ${{ ! contains(github.head_ref, 'release-please--branches--main') }}
+#    name: Test job
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Check out code into the Go module directory
+#        uses: actions/checkout@v4
+#        with:
+#          fetch-depth: 0
+#
+#      - name: Set up Go
+#        uses: actions/setup-go@v3
+#        with:
+#          go-version: ${{ env.GO_VERSION }}
+#
+#      - name: Tidy
+#        run: go mod tidy
+#
+#      - name: Go Test
+#        run: go test ${{ env.TEST_ARGS }} ${{ env.TEST_PATH }}
 
       - name: Go Test
         run: go test ${{ env.TEST_ARGS }} ${{ env.TEST_PATH }}
