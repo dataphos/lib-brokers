@@ -16,11 +16,8 @@ package gcs
 
 import (
 	"context"
-
 	"cloud.google.com/go/iam"
-	"cloud.google.com/go/storage"
 	"github.com/pkg/errors"
-
 	"github.com/dataphos/lib-brokers/internal/errtemplates"
 )
 
@@ -36,15 +33,4 @@ func testPermissions(ctx context.Context, handle *iam.Handle, permissions []stri
 	}
 
 	return nil
-}
-
-// doBucketHealthCheck checks if the bucket resource exists and then checks if the service account linked to it
-// has sufficient permissions for writing objects.
-func doBucketHealthCheck(ctx context.Context, bucket *storage.BucketHandle) error {
-	_, err := bucket.Attrs(ctx)
-	if err != nil {
-		return errors.Wrap(err, "bucket is not accessible")
-	}
-
-	return testPermissions(ctx, bucket.IAM(), []string{"storage.objects.create"})
 }

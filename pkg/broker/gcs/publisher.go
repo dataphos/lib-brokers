@@ -62,17 +62,12 @@ type PublishSettings struct {
 	// ContentType is the MIME type set on uploaded objects.
 	ContentType string
 
-	// ObjectNamer optionally provides a custom function to generate object names.
-	// It receives the message and must return a unique object name.
-	// If nil, a default naming strategy based on timestamp and random suffix is used.
-	ObjectNamer func(broker.OutboundMessage) string
 }
 
 // DefaultPublishSettings stores the default values for PublishSettings.
 var DefaultPublishSettings = PublishSettings{
 	ObjectPrefix: "",
 	ContentType:  "application/octet-stream",
-	ObjectNamer:  nil,
 }
 
 // NewPublisher returns a new instance of Publisher, configured from the provided PublisherConfig and PublishSettings.
@@ -103,6 +98,7 @@ func NewPublisher(ctx context.Context, config PublisherConfig, settings PublishS
 	return &Publisher{
 		client:   client,
 		settings: settings,
+		skipBucketHealthCheck: false,
 	}, nil
 }
 
@@ -135,7 +131,7 @@ type Topic struct {
 }
 
 // Publish writes a single message as a GCS object.
-// The object name is generated using the configured ObjectNamer or a default timestamp-based strategy.
+// The object name is generated using the timestamp-based strategy.
 // Message attributes are stored as object metadata.
 func (t *Topic) Publish(ctx context.Context, message broker.OutboundMessage) error {
 	objectName := t.objectName(message)
@@ -178,12 +174,9 @@ func (t *Topic) BatchPublish(ctx context.Context, messages ...broker.OutboundMes
 }
 
 func (t *Topic) objectName(message broker.OutboundMessage) string {
-	if t.settings.ObjectNamer != nil {
-		return t.settings.ObjectNamer(message)
-	}
-
+	
 	suffix := randomHex(8)
-	ts := time.Now().UTC().Format("2006/01/02/150405")
+	ts := time.Now().UTC().Format("2006/01/02/15")
 
 	var key string
 	if message.Key != "" {
@@ -199,4 +192,15 @@ func randomHex(n int) string {
 	_, _ = rand.Read(b)
 
 	return hex.EncodeToString(b)
+}
+
+// doBucketHealthCheck checks if the bucket resource exists and then checks if the service account linked to it
+// has sufficient permissions for writing objects.
+func doBucketHealthCheck(ctx context.Context, bucket *storage.BucketHandle) error {
+	_, err := bucket.Attrs(ctx)
+	if err != nil {
+		return errors.Wrap(err, "bucket is not accessible")
+	}
+	
+	return testPermissions(ctx, bucket.IAM(), []string{"storage.objects.create"})
 }
