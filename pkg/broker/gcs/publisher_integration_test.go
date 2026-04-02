@@ -17,10 +17,12 @@ package gcs_test
 import (
 	"context"
 	"os"
-	"testing"
 	"strconv"
+	"testing"
+
 	"cloud.google.com/go/storage"
 	"google.golang.org/api/option"
+	
 	"github.com/dataphos/lib-brokers/pkg/broker"
 	gcs "github.com/dataphos/lib-brokers/pkg/broker/gcs"
 )

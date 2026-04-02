@@ -16,8 +16,10 @@ package gcs
 
 import (
 	"context"
+
 	"cloud.google.com/go/iam"
 	"github.com/pkg/errors"
+
 	"github.com/dataphos/lib-brokers/internal/errtemplates"
 )
 

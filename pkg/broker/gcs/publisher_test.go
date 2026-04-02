@@ -19,9 +19,11 @@ import (
 	"io"
 	"strconv"
 	"testing"
+
 	"cloud.google.com/go/storage"
 	"github.com/fsouza/fake-gcs-server/fakestorage"
 	"google.golang.org/api/iterator"
+	
 	"github.com/dataphos/lib-brokers/pkg/broker"
 	gcs "github.com/dataphos/lib-brokers/pkg/broker/gcs"
 )
