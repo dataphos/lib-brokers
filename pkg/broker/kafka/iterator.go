@@ -25,6 +25,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/twmb/franz-go/pkg/kgo"
 	"github.com/twmb/franz-go/pkg/sasl/plain"
+	"github.com/twmb/franz-go/pkg/sasl/scram"
 	"github.com/twmb/franz-go/plugin/kprom"
 
 	"github.com/dataphos/lib-brokers/pkg/broker"
@@ -77,6 +78,11 @@ type ConsumerConfig struct {
 	//
 	// If nil, the consumer will not use SASL/PLAIN.
 	PlainSASL *PlainSASLConfig
+
+	// ScramSASL the SASL/SCRAM-SHA-512 configuration.
+	//
+	// If nil, the consumer will not use SASL/SCRAM-SHA-512.
+	ScramSASL *ScramSASLConfig
 
 	// Prometheus the Prometheus configuration.
 	//
@@ -173,7 +179,7 @@ func configureIteratorOptions(config ConsumerConfig, settings ConsumerSettings) 
 	if config.TLS != nil {
 		opts = append(opts, kgo.DialTLSConfig(config.TLS))
 	} else {
-		if config.PlainSASL != nil {
+		if config.PlainSASL != nil || config.ScramSASL != nil {
 			// TLS has to be set when using SASL.
 			// If it's not set, we set it here.
 			opts = append(
@@ -183,8 +189,8 @@ func configureIteratorOptions(config ConsumerConfig, settings ConsumerSettings) 
 		}
 	}
 
-	if config.Kerberos != nil && config.PlainSASL != nil {
-		return nil, errors.New("Can not use multiple SASL authentication mechanisms simultaneously")
+	if (config.Kerberos != nil && config.PlainSASL != nil) || (config.Kerberos != nil && config.ScramSASL != nil) || (config.PlainSASL != nil && config.ScramSASL != nil) {
+		return nil, errors.New("Cannot use multiple SASL authentication mechanisms simultaneously")
 	}
 
 	if config.Kerberos != nil {
@@ -209,6 +215,14 @@ func configureIteratorOptions(config ConsumerConfig, settings ConsumerSettings) 
 		}.AsMechanism()))
 	}
 
+	if config.ScramSASL != nil {
+		opts = append(opts, kgo.SASL(scram.Auth{
+			Zid:  config.ScramSASL.Zid,
+			User: config.ScramSASL.User,
+			Pass: config.ScramSASL.Pass,
+		}.AsSha512Mechanism()))
+	}
+
 	if config.Prometheus != nil {
 		opts = append(opts, kgo.WithHooks(kprom.NewMetrics(
 			config.Prometheus.Namespace,
@@ -230,8 +244,8 @@ func configureIteratorClient(ctx context.Context, config ConsumerConfig, setting
 		return nil, err
 	}
 	// Since client.Ping(ctx) currently (kgo v1.10) doesn't use security authorization it times out
-	// when a security protocol (SASL/Plain or Kerberos) is used and that's why we added a check condition.
-	if config.Kerberos == nil && config.PlainSASL == nil {
+	// when a security protocol (SASL/Plain) is used and that's why we added a check condition.
+	if config.PlainSASL == nil && config.ScramSASL == nil {
 		if err = client.Ping(ctx); err != nil {
 			return nil, err
 		}

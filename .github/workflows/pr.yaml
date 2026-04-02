@@ -13,27 +13,29 @@ env:
   TEST_PATH: ./...
 
 jobs:
-  commitlint:
-    name: Commit Lint Job
+  validate_pr_title_job:
+    if: ${{ ! contains(github.head_ref, 'release-please--branches--main') }}
+    name: Validate PR title
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          fetch-depth: 0
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Install commitlint
-        run: |
-          npm install --save-dev @commitlint/{cli,config-conventional}
-
-      - name: Validate PR commits with commitlint
-        run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
+          requireScope: false
+          # Configure additional validation for the subject based on a regex.
+          # This example ensures the subject doesn't start with an uppercase character.
+          subjectPattern: ^(?![A-Z]).+$
+          # If `subjectPattern` is configured, you can use this property to override
+          # the default error message that is shown when the pattern doesn't match.
+          # The variables `subject` and `title` can be used within the message.
+          subjectPatternError: |
+            The subject "{subject}" found in the pull request title "{title}"
+            didn't match the configured pattern. Please ensure that the subject
+            doesn't start with an uppercase character.
 
   editor_config_job:
+    if: ${{ ! contains(github.head_ref, 'release-please--branches--main') }}
     name: Editor Config Job
     runs-on: ubuntu-latest
     steps:
@@ -51,8 +53,8 @@ jobs:
           ./node_modules/.bin/editorconfig-checker
 
   lint_job:
-    name: Go Lint Job
     if: ${{ ! contains(github.head_ref, 'release-please--branches--main') }}
+    name: Go lint
     runs-on: ubuntu-latest
     steps:
       - name: Check out code into the Go module directory
@@ -177,8 +179,8 @@ jobs:
 #          gh pr create --base "${{ env.PARENT_BRANCH }}" --head "update-third-party-licenses-${{ github.run_id }}" --title "${{ env.PR_TITLE }}" --body "This is an automated PR that updates the list of 3rd party licenses."
 
   test_job:
-    name: Test Job
-    if: ${{ github.base_ref == 'main' && ! contains(github.head_ref, 'release-please--branches--main') }}
+    if: ${{ ! contains(github.head_ref, 'release-please--branches--main') }}
+    name: Test job
     runs-on: ubuntu-latest
     steps:
       - name: Check out code into the Go module directory
