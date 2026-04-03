@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/dataphos/lib-brokers/compare/v1.3.0...v1.3.1) (2026-04-03)
+
+
+### Features
+
+* add missing dependency ([c520e40](https://github.com/dataphos/lib-brokers/commit/c520e4085aeae87f9ae70318f92e469ebc40a184))
+
 ## [1.3.0](https://github.com/dataphos/lib-brokers/compare/v1.2.0...v1.3.0) (2026-04-03)
 
 
