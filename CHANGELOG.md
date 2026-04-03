@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/dataphos/lib-brokers/compare/v1.2.0...v1.3.0) (2026-04-03)
+
+
+### Features
+
+* add gcs connection ([5911e05](https://github.com/dataphos/lib-brokers/commit/5911e0560cd5ce60648b601c27ac82f2d7d6b8ef))
+
+
 ## [1.2.0](https://github.com/dataphos/lib-brokers/compare/v1.1.0...v1.2.0) (2024-12-20)
 
 
