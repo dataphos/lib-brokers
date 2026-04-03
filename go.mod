@@ -5,6 +5,7 @@ go 1.18
 require (
 	cloud.google.com/go/iam v1.0.1
 	cloud.google.com/go/pubsub v1.30.1
+	cloud.google.com/go/storage v1.60.0
 	github.com/Azure/azure-sdk-for-go/sdk/messaging/azservicebus v1.3.0
 	github.com/apache/pulsar-client-go v0.10.0
 	github.com/dataphos/lib-batchproc v1.0.0
