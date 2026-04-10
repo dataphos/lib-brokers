@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/dataphos/lib-brokers/compare/v1.3.1...v1.4.0) (2026-04-10)
+
+
+### Features
+
+* kafka ssl scram ([#22](https://github.com/dataphos/lib-brokers/issues/22)) ([8823f17](https://github.com/dataphos/lib-brokers/commit/8823f1768c44b52a9712a1f0ae4ea96dbb73283d))
+
 ## [1.3.1](https://github.com/dataphos/lib-brokers/compare/v1.3.0...v1.3.1) (2026-04-03)
 
 
