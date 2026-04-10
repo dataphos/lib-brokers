@@ -100,9 +100,12 @@ func configureTransactionSession(ctx context.Context, producerConfig ProducerCon
 		return nil, err
 	}
 
-	// when using kerberos the client.Ping(ctx) will always time out because
-	// no kerberos handshake is done, so we added one more condition.
-	if consumerConfig.Kerberos == nil || producerConfig.Kerberos == nil {
+	// When using Kerberos, client.Ping(ctx) can time out because no Kerberos handshake is done.
+	// The same applies to SASL PLAIN / SCRAM on the producer or consumer.
+	skipPingKrb := consumerConfig.Kerberos != nil && producerConfig.Kerberos != nil
+	skipPingSASL := producerConfig.PlainSASL != nil || producerConfig.ScramSASL != nil ||
+		consumerConfig.PlainSASL != nil || consumerConfig.ScramSASL != nil
+	if !skipPingKrb && !skipPingSASL {
 		if err = session.Client().Ping(ctx); err != nil {
 			return nil, err
 		}

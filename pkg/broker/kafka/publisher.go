@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/twmb/franz-go/pkg/kgo"
 	"github.com/twmb/franz-go/pkg/sasl/plain"
+	"github.com/twmb/franz-go/pkg/sasl/scram"
 	"github.com/twmb/franz-go/plugin/kprom"
 
 	"github.com/dataphos/lib-brokers/pkg/broker"
@@ -70,6 +71,11 @@ type ProducerConfig struct {
 	//
 	// If nil, the producer will not use SASL/PLAIN.
 	PlainSASL *PlainSASLConfig
+
+	// ScramSASL the SASL/SCRAM-SHA-512 configuration.
+	//
+	// If nil, the producer will not use SASL/SCRAM-SHA-512.
+	ScramSASL *ScramSASLConfig
 
 	// Prometheus the Prometheus configuration.
 	//
@@ -175,7 +181,7 @@ func configurePublisherOptions(config ProducerConfig, settings ProducerSettings)
 	if config.TLS != nil {
 		opts = append(opts, kgo.DialTLSConfig(config.TLS))
 	} else {
-		if config.PlainSASL != nil {
+		if config.PlainSASL != nil || config.ScramSASL != nil {
 			// TLS has to be set when using SASL.
 			// If it's not already set by the user, we set it here, since using SASL without TLS is insecure, as without it,
 			// credentials are passed in plaintext across the network.
@@ -185,7 +191,7 @@ func configurePublisherOptions(config ProducerConfig, settings ProducerSettings)
 		}
 	}
 
-	if config.Kerberos != nil && config.PlainSASL != nil {
+	if (config.Kerberos != nil && config.PlainSASL != nil) || (config.Kerberos != nil && config.ScramSASL != nil) || (config.PlainSASL != nil && config.ScramSASL != nil) {
 		return nil, errors.New("Can not use multiple SASL authentication mechanisms simultaneously")
 	}
 
@@ -209,6 +215,14 @@ func configurePublisherOptions(config ProducerConfig, settings ProducerSettings)
 			User: config.PlainSASL.User,
 			Pass: config.PlainSASL.Pass,
 		}.AsMechanism()))
+	}
+
+	if config.ScramSASL != nil {
+		opts = append(opts, kgo.SASL(scram.Auth{
+			Zid:  config.ScramSASL.Zid,
+			User: config.ScramSASL.User,
+			Pass: config.ScramSASL.Pass,
+		}.AsSha512Mechanism()))
 	}
 
 	if config.Prometheus != nil {
@@ -240,7 +254,7 @@ func configurePublisherClient(ctx context.Context, config ProducerConfig, settin
 	}
 	// Since client.Ping(ctx) currently (kgo v1.10) doesn't use security authorization it times out
 	// when a security protocol (SASL/Plain) is used and that's why we added a check condition.
-	if config.PlainSASL == nil {
+	if config.PlainSASL == nil && config.ScramSASL == nil {
 		if err = client.Ping(ctx); err != nil {
 			return nil, err
 		}
