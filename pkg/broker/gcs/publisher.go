@@ -182,7 +182,10 @@ func (t *Topic) objectName(message broker.OutboundMessage) string {
 		key = message.Key + "_"
 	}
 
-	return fmt.Sprintf("%s%s/%s%s", t.settings.ObjectPrefix, ts, key, suffix)
+	if t.settings.ObjectPrefix != "" {
+		return fmt.Sprintf("%s/%s/%s%s", t.settings.ObjectPrefix, ts, key, suffix)
+	}
+	return fmt.Sprintf("%s/%s%s", ts, key, suffix)
 }
 
 func randomHex(n int) string {
