@@ -175,17 +175,15 @@ func (t *Topic) BatchPublish(ctx context.Context, messages ...broker.OutboundMes
 
 func (t *Topic) objectName(message broker.OutboundMessage) string {
 	suffix := randomHex(8)
-	ts := time.Now().UTC().Format("2006/01/02/15")
-
 	var key string
 	if message.Key != "" {
 		key = message.Key + "_"
 	}
 
 	if t.settings.ObjectPrefix != "" {
-		return fmt.Sprintf("%s/%s/%s%s", t.settings.ObjectPrefix, ts, key, suffix)
+		return fmt.Sprintf("%s/%s%s", t.settings.ObjectPrefix, key, suffix)
 	}
-	return fmt.Sprintf("%s/%s%s", ts, key, suffix)
+	return fmt.Sprintf("%s%s", key, suffix)
 }
 
 func randomHex(n int) string {
