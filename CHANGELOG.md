@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/dataphos/lib-brokers/compare/v1.4.0...v1.4.1) (2026-04-24)
+
+
+### Bug Fixes
+
+* change message names ([#25](https://github.com/dataphos/lib-brokers/issues/25)) ([50b80be](https://github.com/dataphos/lib-brokers/commit/50b80bedfab2c868d8a2cdb210974347730f47a9))
+
 ## [1.4.0](https://github.com/dataphos/lib-brokers/compare/v1.3.1...v1.4.0) (2026-04-10)
 
 
