@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/dataphos/lib-brokers/compare/v1.4.1...v1.4.2) (2026-04-24)
+
+
+### Bug Fixes
+
+* remove time import ([#27](https://github.com/dataphos/lib-brokers/issues/27)) ([851aa85](https://github.com/dataphos/lib-brokers/commit/851aa855f0dccf6e8949e4e383be206241619918))
+
 ## [1.4.1](https://github.com/dataphos/lib-brokers/compare/v1.4.0...v1.4.1) (2026-04-24)
 
 
