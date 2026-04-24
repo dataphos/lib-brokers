@@ -19,7 +19,6 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"time"
 
 	"cloud.google.com/go/storage"
 	"github.com/pkg/errors"
